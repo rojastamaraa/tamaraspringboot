@@ -18,6 +18,9 @@ public class ChatHandler extends TextWebSocketHandler{
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception{
 		sessions.add(session);
+		
+		 String welcomeMessage = "Bienvenido al chat!";
+		    session.sendMessage(new TextMessage(welcomeMessage));
 	}
 	
 	@Override
@@ -26,9 +29,21 @@ public class ChatHandler extends TextWebSocketHandler{
 	}
 	
 	@Override
-	protected void handleTextMessage(WebSocketSession session, TextMessage message)throws Exception{
-		for(WebSocketSession webSocketSession : sessions) {
-			webSocketSession.sendMessage(message);
-		}
+	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+	    String clientmessage = message.getPayload();
+	    
+	    if(clientmessage.contains("2")) {
+	    	String msj = clientmessage + "<span style = 'color:green;'>Correcto</span>";
+	    	
+	    	for(WebSocketSession webSocketSession: sessions) {
+	    		webSocketSession.sendMessage(new TextMessage(msj));
+	    	}
+	    } else {
+	    	for(WebSocketSession webSocketSession: sessions) {
+	    		webSocketSession.sendMessage(message);
+	    	}
+	    }
 	}
+
+
 }
